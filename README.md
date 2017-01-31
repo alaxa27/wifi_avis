@@ -68,7 +68,7 @@ When you query an URL in your favorite web browser the Operating System ask your
 The webserver basically listen to a given port and respond to resquests by sending packets that are able to transit through network and be readable by the wanted protocol client.
 The system created for this study is written in Python, therefore a classic server such as Apache or NginX is not enough. We also need a way to interpret Python, for this purpose we are using uWSGI.
 Basically it looks like that:
-![ ](/home/alaxa/Projects/wifi_avis/static_readme/server_diagramm  "Diagramm workflow")
+![ ](static_readme/server_diagramm  "Diagramm workflow")
 
 
 
