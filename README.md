@@ -66,9 +66,9 @@ To do so we started using DHCPd but it was innapropriate. In fact the network we
 When you query an URL in your favorite web browser the Operating System ask your DNS what is the IP of this given URL. Usually the ISP offers a DNS for you to browse the internet. Here we need to bypass all available DNSs. In fact we needed a Captive Portal. The goal is to have a DNS that replies **192.168.1.2**(IP of master's machine) to every requests except if the query is **192.168.1.1**(IP of the HP ProCurve).
 ###WebServer
 The webserver basically listen to a given port and respond to resquests by sending packets that are able to transit through network and be readable by the wanted protocol client.
-The system created for this study is written in Python, therefore a classic server such as Apache or NginX is not enough. We also need a way to interpret Python, for this purpose we are using uWSGI.
+The system created for this study is written in Python, therefore a classic server such as Apache or NGINX is not enough. We also need a way to interpret Python, for this purpose we are using uWSGI.
 Basically it looks like that:
-![ ](static_readme/server_diagramm  "Diagramm workflow")
+![ ](static_readme/server_diagramm.png  "Diagramm workflow")
 
 
 
