@@ -8,7 +8,9 @@
 - 2 RJ45
 - 1 TP LINK PoE Injector
 - 1 HP ProCurve MSM310 Controller
-- 1 Computer with Ubuntu or Debian installed on
+- 1 Computer with Ubuntu or Debian installed
+
+
 ###Cables
 First 1 RJ45 cable linking ***Data OUT + Power*** port from PoE and ***Port 1*** of the controller.
 The second cable links ***Port 2*** of the controller and an ***ethernet port*** of your computer.
