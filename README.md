@@ -58,7 +58,7 @@ The machine's configuration consists of three steps:
 2. DNS
 3. WebServer
 
-All these three configuration steps are take care of by the installation script:
+All these three configuration steps are taken care of by the installation script:
 
 ###DHCP Server
 When a client connects to a network he needs to know the exact configuration it needs to work properly. It's not acceptable knowing the myriad of configurations possible out there. The Dynamic Host Protocol Configuration comes in rescue by leasing all potential clients an IP address with the appropriate configuration.
@@ -67,7 +67,7 @@ To do so we started using DHCPd but it was innapropriate. In fact the network we
 ###DNS
 When you query an URL in your favorite web browser the Operating System ask your DNS what is the IP of this given URL. Usually the ISP offers a DNS for you to browse the internet. Here we need to bypass all available DNSs. In fact we needed a Captive Portal. The goal is to have a DNS that replies **192.168.1.2**(IP of master's machine) to every requests except if the query is **192.168.1.1**(IP of the HP ProCurve).
 ###WebServer
-The webserver basically listen to a given port and respond to resquests by sending packets that are able to transit through network and be readable by the wanted protocol client.
+The webserver basically listen to a given port and respond to resquests by sending packets that are able to transit through network and be readable by the wanted client's protocol.
 The system created for this study is written in Python, therefore a classic server such as Apache or NGINX is not enough. We also need a way to interpret Python, for this purpose we are using uWSGI.
 Basically it looks like that:
 ![ ](static_readme/server_diagramm.png  "Diagramm workflow")
