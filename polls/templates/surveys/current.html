@@ -1,0 +1,67 @@
+{% extends "base.html" %}
+
+{% block title %}{{ survey }}{% endblock %}
+
+{% block content %}
+  <h2>{{ survey }}</h2>
+  <div id="questions">
+  </div>
+
+  <button id="refresh">Rafraîchir</button>
+
+  {% load static %}
+  <script>
+    const ACTIVE_QUESTIONS_URL = '{% url 'surveys:active-questions' %}';
+
+    $(document).ready(function() {
+      console.log("Document ready");
+
+      $('#refresh').click(function() {
+        requestQuestions(ACTIVE_QUESTIONS_URL);
+      });
+
+      function requestQuestions(url) {
+        $.get(url, receivedQuestions, 'html')
+          .fail(function() {
+          window.alert("Error, please try again");
+          });
+      }
+
+      function receivedQuestions(data) {
+        $('#questions').html(data);
+        $('form').each(function() {
+          $(this).submit(function(e) {
+            var form = $(this);
+            const url = this.action; // the script where you handle the form input.
+            const data = form.serialize();
+
+            $.post(url, data).done(function(data) {
+              form.remove();
+            }).fail(function(error) {
+              window.alert("Could not submit your answer, please try again.");
+            });
+            e.preventDefault(); // avoid to execute the actual submit of the form.
+          })
+        });
+      }
+  });
+  </script>
+  <script src="{% static "js/app.js" %}" ></script>
+{% endblock %}
+
+$("#idForm").submit(function(e) {
+
+    var url = "path/to/your/script.php"; // the script where you handle the form input.
+
+    $.ajax({
+           type: "POST",
+           url: url,
+           data: $("#idForm").serialize(), // serializes the form's elements.
+           success: function(data)
+           {
+               alert(data); // show response from the php script.
+           }
+         });
+
+    e.preventDefault(); // avoid to execute the actual submit of the form.
+});

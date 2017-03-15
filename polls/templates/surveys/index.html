@@ -1,0 +1,12 @@
+{% extends "base.html" %}
+
+{% block title %}Liste des sondages{% endblock %}
+
+{% block content %}
+  <p>Les sondages disponibles sont les suivants:</p>
+  <ul>
+    {% for survey in surveys %}
+      <li><a href="{% url 'surveys:detail' survey.id %}">{{ survey }}</a></li>
+    {% endfor %}
+  </ul>
+{% endblock %}
