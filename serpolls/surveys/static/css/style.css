@@ -1,0 +1,46 @@
+body {
+    background: url('../img/background.png') fixed no-repeat;
+    background-size: 100% 100%;
+
+    height: 100vh;
+}
+
+h2 {
+    color: white;
+}
+
+button, input[type="submit"] {
+    width: 100%;
+    margin-bottom: 8px;
+}
+
+input[type="number"] {
+    margin-bottom: 16px;
+}
+
+.question-form ul {
+    padding: 0;
+}
+
+.question-form li {
+    list-style-type: none;
+}
+
+label {
+    width: 100%;
+    padding: 8px;
+}
+
+.question-form {
+    background-color: white;
+    border-radius: 4px;
+    margin-top: 16px;
+    padding: 16px;
+}
+
+#charts .row {
+    background-color: white;
+    border-radius: 4px;
+    margin-top: 16px;
+    padding: 24px;
+}

@@ -1,8 +1,0 @@
-{% for pair in pairs %}
-  <form action="{% url 'surveys:answer' pair.question.id %}" method="post">
-    <p>{{ pair.question.text }}</p>
-    {% csrf_token %}
-    {{ pair.form }}
-    <input type="submit" value="Valider">
-  </form>
-{% endfor %}
