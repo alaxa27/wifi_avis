@@ -1,10 +1,10 @@
-#Wifi Avis
-##Introduction
+# Wifi Avis
+## Introduction
 
-##HP ProCurve Configuration
+## HP ProCurve Configuration
 
 
-###Prerequisites:
+### Prerequisites:
 - 2 RJ45
 - 1 TP LINK PoE Injector
 - 1 HP ProCurve MSM310 Controller
