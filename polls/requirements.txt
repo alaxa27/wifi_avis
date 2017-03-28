@@ -1,0 +1,7 @@
+asgi_redis
+channels
+daphne
+django
+django_nested_admin
+django_object_actions
+pillow
