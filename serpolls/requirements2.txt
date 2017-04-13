@@ -10,3 +10,5 @@ msgpack-python
 python-monkey-business
 Twisted
 autobahn
+six
+uwsgi

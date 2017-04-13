@@ -2,6 +2,6 @@
 
 cd /home/master/wifi_avis/serpolls/
 gksudo docker-compose up&
-sleep 10
-google-chrome http://wifi.avis/admin
+sleep 15
+firefox http://wifi.avis/admin
 
