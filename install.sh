@@ -18,3 +18,7 @@ apt-get -y install nginx
 echo "Copying configuration..."
 cp -v config_files/* /etc/
 
+echo "Installing shortcut"
+apt-get -y install gksu
+cp -v wifiavis.desktop /usr/share/applications/
+

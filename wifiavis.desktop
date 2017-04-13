@@ -1,0 +1,10 @@
+[Desktop Entry]
+Name=Serveur Wifi Avis
+Comment=Lancer le serveur
+Exec=gksudo /home/master/wifi_avis/serpolls/Serveur.sh
+Icon=gnome-network-wireless
+Terminal=true
+Type=Application
+Categories=GNOME;GTK;Game;CardGame;
+Keywords=Serveur;serpolls;wifiavis;serveur
+StartupNotify=true
