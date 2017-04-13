@@ -67,34 +67,34 @@ class Session(models.Model):
         line = 4
         for question in self.survey.question_set.all():
             # TODO: other question types
-            results_ws[f'A{line}'] = str(question)
-            results_ws[f'A{line + 1}'] = "Réponses"
+            results_ws['A{}'.format(line)] = str(question)
+            results_ws['A{}'.format(line+1)] = "Réponses"
 
             if question.type in [Question.UNIQUE, Question.MULTIPLE]:
                 for i, choice in enumerate(question.choice_set.all()):
-                    results_ws[f'{chr(ord("A") + i + 1)}{line}'] = choice.text
-                    results_ws[f'{chr(ord("A") + i + 1)}{line + 1}'] = \
+                    results_ws['{}{}'.format(chr(ord("A") + i + 1),line)] = choice.text
+                    results_ws['{}{}'.format(chr(ord("A") + i + 1),line + 1)] = \
                         UniqueAnswer.objects.filter(question=question, choice=choice, session=self).count() if question.type == Question.UNIQUE else MultipleAnswer.objects.filter(question=question, choices=choice, session=self).count()
 
             elif question.type == Question.RATE:
                 for i in range(question.scale + 1):
-                    results_ws[f'{chr(ord("A") + i + 1)}{line}'] = i
-                    results_ws[f'{chr(ord("A") + i + 1)}{line + 1}'] = RateAnswer.objects.filter(question=question, rating=i, session=self).count()
+                    results_ws['{}{}'.format(chr(ord("A") + i + 1),line)] = i
+                    results_ws['{}{}'.format(chr(ord("A") + i + 1),line + 1)] = RateAnswer.objects.filter(question=question, rating=i, session=self).count()
 
             line += 3
 
         comments_ws = wb.create_sheet("Commentaires")
 
         for i, comment in enumerate(self.comment_set.all()):
-            comments_ws[f'A{i + 1}'] = comment.date
-            comments_ws[f'B{i + 1}'] = comment.author
-            comments_ws[f'C{i + 1}'] = comment.text
+            comments_ws['A'.format(i + 1)] = comment.date
+            comments_ws['B'.format(i + 1)] = comment.author
+            comments_ws['C'.format(i + 1)] = comment.text
 
         i = 0
-        while os.path.exists(os.path.join(settings.EXPORT_DIR, f"{self} - {i}.xlsx")):
+        while os.path.exists(os.path.join(settings.EXPORT_DIR, "{} - {}.xlsx".format(self, i))):
             i += 1
 
-        wb.save(os.path.join(settings.EXPORT_DIR, f"{self} - {i}.xlsx"))
+        wb.save(os.path.join(settings.EXPORT_DIR, "{} - {}.xlsx".format(self, i)))
 
     def __str__(self):
         return self.title
@@ -268,6 +268,6 @@ class Comment(models.Model):
 
     def __str__(self):
         if len(self.text) > 16:
-            return f"{self.text[:16]}..."
+            return "{}...".format(self.text[:16])
         else:
             return self.text

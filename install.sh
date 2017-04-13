@@ -4,7 +4,7 @@ echo "Installing dnsmasq..."
 apt-get -y install dnsmasq
 
 echo "Installing python modules pip..."
-apt-get -y install python3-pip python3-pil npm
+apt-get -y install python3-pip python3-pil npm node
 
 echo "Installing Django..."
 #pip install Django

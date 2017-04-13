@@ -6,4 +6,4 @@ django-nested-admin==3.0.13
 django-nested-inline==0.3.6
 django-object-actions==0.9.0
 Pillow==4.0.0
-openpyxl
+openpyxl==2.4.5

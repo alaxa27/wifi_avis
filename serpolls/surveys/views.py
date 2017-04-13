@@ -85,7 +85,7 @@ def login(request):
         if form.is_valid():
             first_name = form.cleaned_data['first_name']
             last_name = form.cleaned_data['last_name']
-            request.session['name'] = f'{first_name} {last_name}'
+            request.session['name'] = '{} {}'.format(first_name, last_name)
             return redirect('surveys:current')
 
     form = LoginForm()
