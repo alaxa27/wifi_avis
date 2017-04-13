@@ -1,30 +1,27 @@
+import json
+
+from channels import Group
+
+from django.contrib.admin.views.decorators import staff_member_required
 from django.http import HttpResponse, JsonResponse
-from django.shortcuts import get_object_or_404, render
+from django.shortcuts import get_object_or_404, redirect, render
+from django.views.decorators.csrf import csrf_exempt
+from django.utils.translation import ugettext as _
 
-from .forms import AnswerFormManager
-from .models import Choice, MultipleAnswer, Question, RateAnswer, Survey, UniqueAnswer
-
-
-def index(request):
-    surveys = Survey.objects.all()
-    return render(request, 'surveys/index.html', {'surveys': surveys})
-
-
-def detail(request, survey_id):
-    survey = get_object_or_404(Survey, id=survey_id)
-    return render(request, 'surveys/detail.html', {'survey': survey})
+from .forms import AnswerFormManager, LoginForm
+from .models import Comment, Question, Session, Survey
 
 
 def current_survey(request):
-    survey = get_object_or_404(Survey, is_current=True)
-    return render(request, 'surveys/current.html', {'survey': survey})
+    session = get_object_or_404(Session, is_current=True)
+    return render(request, 'surveys/current.html', {'survey': session.survey})
 
 
 def active_questions(request):
-    survey = get_object_or_404(Survey, is_current=True)
+    session = get_object_or_404(Session, is_current=True)
     questions = Question.objects.filter(
         is_active=True,
-        survey=survey
+        survey=session.survey
     ).exclude(
         id__in=request.session.get('answered', []),
     ).exclude(  # FIXME: TO BE REMOVED WHEN FIXED
@@ -48,10 +45,10 @@ def active_questions(request):
             'form': form
         })
 
-    return render(request, 'surveys/question.html', {'pairs': pairs})
+    return render(request, 'surveys/questions.html', {'pairs': pairs})
 
 
-def answer(request, question_id):
+def answer(request, question_id=None):
     form = AnswerFormManager.get_form(
         data=request.POST,
         question=Question.objects.get(id=question_id)
@@ -70,83 +67,105 @@ def answer(request, question_id):
         return HttpResponse(status=401)
 
 
-def current_results(request):
+def skip(request, question_id):
+    answered = request.session.get('answered', [])
+    answered.append(question_id)
+    request.session['answered'] = answered
+    return HttpResponse(status=200)
+
+
+def login(request):
+    # Client already logged in
+    if request.session.get('name') is not None:
+        print("Not none", request.session.get('name'))
+        return redirect('surveys:current')
+
+    if request.method == 'POST':
+        form = LoginForm(request.POST)
+        if form.is_valid():
+            first_name = form.cleaned_data['first_name']
+            last_name = form.cleaned_data['last_name']
+            request.session['name'] = f'{first_name} {last_name}'
+            return redirect('surveys:current')
+
+    form = LoginForm()
+    return render(request, 'surveys/login.html', {'form': form})
+
+
+@csrf_exempt
+def comment(request):
+    if request.method != 'POST':
+        return HttpResponse(status=400)
+
+    # A session must be running
+    if not Session.objects.filter(is_current=True).exists():
+        return HttpResponse(status=400)
+
+    text = request.POST.get('text')
+    if text is None:
+        return HttpResponse(status=400)
+
+    Group('comments').send({'text': json.dumps({
+        'type': 'comment',
+        'author': request.session.get('name', _("Anonymous")),
+        'text': text
+    })})
+    return HttpResponse(status=200)
+
+
+@staff_member_required
+def comments_select(request):
+    return render(request, 'surveys/comments_select.html')
+
+
+@csrf_exempt
+@staff_member_required
+def select_comment(request):
+    if request.method != 'POST':
+        return HttpResponse(status=400)
+
+    author = request.POST.get('author')
+    text = request.POST.get('text')
+
+    Comment.objects.create(
+        author=author,
+        text=text,
+        session=Session.objects.get(is_current=True)
+    )
+
+    Group('comments-valid').send({'text': json.dumps({
+        'type': 'comment',
+        'author': author,
+        'text': text
+    })})
+
+    return HttpResponse(status=200)
+
+
+@staff_member_required
+def discard_all_comments(request):
+    Group('comments-valid').send({'text': json.dumps({
+            'type': 'discard-all-comments'
+    })})
+
+    return HttpResponse(status=200)
+
+
+def results(request):
     return render(request, 'surveys/results.html')
 
 
-def current_results_data(request):
-
-    questions = Question.objects.filter(
-        survey__is_current=True,
-        is_active=True
-    )
-
-    charts = []
-    for question in questions:
-        chart = {
-            'options': {
-                'scales': {
-                    'yAxes': [{
-                        'ticks': {
-                            'beginAtZero': True
-                        }
-                    }]
-                }
-            }
-        }
-        if question.type == Question.RATE:
-            chart['type'] = 'bar'
-            chart['data'] = {
-                'labels': [],
-                'datasets': [{
-                    'label': question.text,
-                    'data': []
-                }]
-            }
-
-            dataset = chart['data']['datasets'][0]
-
-            answers = RateAnswer.objects.filter(question=question)
-            for rating in range(question.scale + 1):
-                chart['data']['labels'].append(rating)
-                dataset['data'].append(answers.filter(rating=rating).count())
-
-        elif question.type == Question.UNIQUE:
-            chart['type'] = 'bar'
-            chart['data'] = {
-                'labels': [],
-                'datasets': [{
-                    'label': question.text,
-                    'data': []
-                }]
-            }
-
-            dataset = chart['data']['datasets'][0]
-
-            for choice in Choice.objects.filter(question=question):
-                chart['data']['labels'].append(choice.text)
-                dataset['data'].append(UniqueAnswer.objects.filter(choice=choice).count())
-
-        elif question.type == Question.MULTIPLE:
-            chart['type'] = 'bar'
-            chart['data'] = {
-                'labels': [],
-                'datasets': [{
-                    'label': question.text,
-                    'data': []
-                }]
-            }
-
-            dataset = chart['data']['datasets'][0]
-
-            for choice in Choice.objects.filter(question=question):
-                chart['data']['labels'].append(choice.text)
-                dataset['data'].append(MultipleAnswer.objects.filter(choices=choice).count())
-        # TODO: other question types
-        else:
-            continue
-
-        charts.append(chart)
-
-    return JsonResponse({'charts': charts})
-
+def active_questions_list(request):
+    return JsonResponse({
+        'questions': [{
+            'id': question.id,
+            'text': question.text,
+            'type': question.type,
+            'choices':
+                [choice.text for choice in question.choice_set.all()]
+                if question.type != Question.RATE else
+                [i for i in range(question.scale + 1)],
+            'results': question.get_answers_data()
+        } for question in Question.objects.filter(is_active=True)
+        ]
+    })

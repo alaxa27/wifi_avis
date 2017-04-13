@@ -1,0 +1,21 @@
+{
+  "name": "serpolls",
+  "version": "1.0.0",
+  "description": "## Introduction _SER Polls_ is a surveys web applications designed for the town hall of Saint-Etienne-Du-Rouvray (FRANCE). It provides a simple and light solution to host real-time surveys accessible through any modern web-browser.",
+  "main": "./surveys/static/js/app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "babel-core": "^6.24.1",
+    "babel-loader": "^6.4.1",
+    "babel-plugin-transform-runtime": "^6.23.0",
+    "babel-preset-es2015": "^6.24.1"
+  },
+  "dependencies": {
+    "babel-polyfill": "^6.23.0",
+    "babel-runtime": "^6.23.0"
+  }
+}

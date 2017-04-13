@@ -1,0 +1,15 @@
+{% load i18n %}
+{% for pair in pairs%}
+    {% if question.type != 'RANK' %}
+        <form action="{% url 'surveys:answer' pair.question.id %}" method="post" class="question-form">
+            {% if pair.question.image %}
+                <img src="{{ pair.question.image.url }}" width="100%">
+            {% endif %}
+            <h2>{{ pair.question.text }}</h2>
+            {% csrf_token %}
+            {{ pair.form }}
+            <input type="submit" value="{% trans "Submit" %}" class="btn btn-lg btn-success">
+            <button class="skip btn btn-default">{% trans "Skip" %}</button>
+        </form>
+    {% endif %}
+{% endfor %}

@@ -1,7 +1,13 @@
 from django import forms
 from django.core.exceptions import ValidationError
+from django.utils.translation import ugettext_lazy as _
 
 from .models import Choice, MultipleAnswer, Question, RateAnswer, UniqueAnswer
+
+
+class LoginForm(forms.Form):
+    first_name = forms.CharField(label=_("First name"), max_length=20)
+    last_name = forms.CharField(label=_("Last name"), max_length=20)
 
 
 class AnswerFormManager:
@@ -29,9 +35,7 @@ class UniqueAnswerForm(forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
         question = kwargs.pop('question')
-        kwargs.update(initial={
-            'question': question
-        })
+        kwargs['initial'] = {'question': question}
 
         super().__init__(*args, **kwargs)
 
@@ -67,9 +71,7 @@ class MultipleAnswerForm(forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
         question = kwargs.pop('question')
-        kwargs.update(initial={
-            'question': question
-        })
+        kwargs['initial'] = {'question': question}
         super().__init__(*args, **kwargs)
 
         choices_field = self.fields['choices']
@@ -110,7 +112,7 @@ class MultipleAnswerForm(forms.ModelForm):
 
         answer = super().save()
 
-        for choice in self.cleaned_data['choices']:
+        for choice in self.cleaned_data.get('choices'):
             answer.choices.add(choice)
 
         if commit:
@@ -129,9 +131,7 @@ class RateAnswerForm(forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
         question = kwargs.pop('question')
-        kwargs.update(initial={
-            'question': question
-        })
+        kwargs['initial'] = {'question': question}
 
         super().__init__(*args, **kwargs)
 

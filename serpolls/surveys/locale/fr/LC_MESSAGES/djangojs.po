@@ -1,0 +1,60 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2017-04-13 11:17+0200\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+
+#: .\surveys\static\js\current\CurrentManager.js:67
+#: .\surveys\static\js\dist\bundle.js:3524
+msgid "Could not submit your answer, please try again."
+msgstr "Impossible de soumettre votre réponse, veuillez réessayer."
+
+#: .\surveys\static\js\current\CurrentManager.js:79
+msgid "Skip the question?"
+msgstr "Passer la question ?"
+
+#: .\surveys\static\js\current\CurrentManager.js:100
+#: .\surveys\static\js\dist\bundle.js:3481
+msgid "Please enter your comment."
+msgstr "Veuillez saisir votre commentaire."
+
+#: .\surveys\static\js\current\CurrentManager.js:107
+#: .\surveys\static\js\dist\bundle.js:3488
+msgid "Comment sent!"
+msgstr "Commentaire envoyé !"
+
+#: .\surveys\static\js\current\CurrentManager.js:109
+#: .\surveys\static\js\dist\bundle.js:3490
+#: .\surveys\static\js\dist\bundle.js:3878
+#: .\surveys\static\js\select\SelectManager.js:59
+msgid "Could not send comment, please try again."
+msgstr "Impossible d'envoyer le commentaire, veuillez réessayer."
+
+#: .\surveys\static\js\dist\bundle.js:4053
+#: .\surveys\static\js\results\Display.js:109
+msgid "Mean"
+msgstr "Moyenne"
+
+#: .\surveys\static\js\dist\bundle.js:4137
+#: .\surveys\static\js\select\StagedComment.js:12
+msgid "Validate"
+msgstr "Valider"
+
+#: .\surveys\static\js\dist\bundle.js:4143
+#: .\surveys\static\js\select\StagedComment.js:18
+msgid "Discard"
+msgstr "Rejeter"

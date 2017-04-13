@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+
+{% block title %}Login{% endblock %}
+
+{% block scripts %}
+
+    {% load static %}
+    <script src="{% static 'js/dist/bundle.js' %}" ></script>
+
+{% endblock %}
+
+{% block content %}
+
+    <div>
+        <form action="{% url 'surveys:login' %}" method="post" class="frame">
+            {% csrf_token %}
+            {{ form }}
+            {% load i18n %}
+            <input type="submit" value="{% trans "Login" %}" class="btn btn-lg btn-success">
+            <button type="button" onclick="location.href='{% url 'surveys:current' %}'" class="skip btn btn-default">{% trans "Continue anonymously" %}</button>
+        </form>
+    </div>
+
+{% endblock %}

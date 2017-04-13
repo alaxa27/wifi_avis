@@ -1,97 +1,34 @@
 {% extends "base.html" %}
 
-{% block content %}
+{% block scripts %}
+
     {% load static %}
-    <script src="{% static "js/chart.min.js" %}"></script>
+    <script src="{% static 'js/dist/bundle.js' %}"></script>
+    <link href="https://fonts.googleapis.com/css?family=Open+Sans+Condensed:300" rel="stylesheet">
 
-    <h1>Results</h1>
+    <style>
+    h2 {
+        padding-top: 16px;
+        font-size: 1rem;
+    }
+    </style>
+{% endblock %}
 
-    <div id="charts">
+{% block content %}
+
+    <div class="panels">
+        <div id="comments" class="panel p-25 resize-x"></div>
+        <div id="charts" class="panel"></div>
     </div>
-    <!--
-    <div class="col-sm-6">
-        <canvas id="chart" width="400" height="400"></canvas>
-    </div>
-    -->
 
     <script>
-    Chart.defaults.global.defaultFontSize = 24;
-    
-    var chartsDiv = document.getElementById("charts");
-    var ctx = document.getElementById("chart");
-
-    var endpoint = '/surveys/current/results/data/';
-    var labels = ["Red", "Blue", "Yellow", "Green", "Purple", "Orange"];
-    var chartData = [12, 19, 3, 5, 2, 3];
-
-    $.ajax({
-        method: "GET",
-        url: endpoint,
-        success: function(data) {
-            console.log("AJAX succeeded");
-            console.log(data);
-
-
-            for (var chartIndex in data.charts) {
-                const row = document.createElement('div');
-                row.className = 'row';
-                chartsDiv.appendChild(row);
-
-                const canvas = document.createElement('canvas');
-                canvas.id = 'chart_' + chartIndex;
-
-                row.appendChild(canvas);
-
-                new Chart(canvas, data.charts[chartIndex]);
-            }
-
-
-        },
-        error: function(error) {
-            console.log("Error during AJAX request", error);
+        const commentsManager = new app.CommentsManager(document.getElementById('comments'))
+        const displayManager = new app.DisplayManager(document.getElementById('charts'))
+        const urls = {
+            active: '{% url 'surveys:active-questions-list' %}'
         }
-    });
 
-;
-
-    /*
-    var chart = new Chart(ctx, {
-            type: 'bar',
-            data: {
-                    labels: labels,
-                    datasets: [{
-                            label: '# of Votes',
-                            data: [12, 19, 3, 5, 2, 3],
-                            backgroundColor: [
-                                    'rgba(255, 99, 132, 0.2)',
-                                    'rgba(54, 162, 235, 0.2)',
-                                    'rgba(255, 206, 86, 0.2)',
-                                    'rgba(75, 192, 192, 0.2)',
-                                    'rgba(153, 102, 255, 0.2)',
-                                    'rgba(255, 159, 64, 0.2)'
-                            ],
-                            borderColor: [
-                                    'rgba(255,99,132,1)',
-                                    'rgba(54, 162, 235, 1)',
-                                    'rgba(255, 206, 86, 1)',
-                                    'rgba(75, 192, 192, 1)',
-                                    'rgba(153, 102, 255, 1)',
-                                    'rgba(255, 159, 64, 1)'
-                            ],
-                            borderWidth: 1
-                    }]
-            },
-            options: {
-                    scales: {
-                            yAxes: [{
-                                    ticks: {
-                                            beginAtZero:true
-                                    }
-                            }]
-                    }
-            }
-    });
-    */
+        const resultsManager = new app.ResultsManager(displayManager, commentsManager, urls)
     </script>
 
 {% endblock %}

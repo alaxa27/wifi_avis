@@ -4,4 +4,5 @@ daphne
 django
 django_nested_admin
 django_object_actions
+openpyxl
 pillow

@@ -1,0 +1,274 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2017-04-13 11:51+0200\n"
+"PO-Revision-Date: 2017-04-13 07:49+0000\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE\n"
+"Language: zxx\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n > 1)\n"
+"X-Loco-Source-Locale: fr_FR\n"
+"X-Loco-Parser: loco_parse_po\n"
+"X-Generator: Loco - https://localise.biz/\n"
+
+#: .\surveys\admin.py:43 .\surveys\models.py:32
+msgid "Current"
+msgstr "Actuel"
+
+#: .\surveys\admin.py:53 .\surveys\admin.py:143
+msgid "Link to survey"
+msgstr "Lien vers le sondage"
+
+#: .\surveys\admin.py:71
+msgid "Set current"
+msgstr "Sélectionner"
+
+#: .\surveys\admin.py:72
+msgid "Set session as current (overrides current)"
+msgstr "Sélectionner cette session comme actuelle (remplace l'actuelle)"
+
+#: .\surveys\admin.py:78
+msgid "Reset current"
+msgstr "Réinitialiser la session actuelle"
+
+#: .\surveys\admin.py:79
+msgid "Reset all sessions to non-current"
+msgstr "Réinitialiser toutes les sessions"
+
+#: .\surveys\admin.py:85
+msgid "Export to Excel"
+msgstr "Exporter vers Excel"
+
+#: .\surveys\admin.py:86
+msgid "Export the gathered session data to an excel file"
+msgstr "Exporter les données de la session de sondage vers un fichier Excel"
+
+#: .\surveys\admin.py:93
+msgid "survey current"
+msgstr "sondage actuel"
+
+#: .\surveys\admin.py:98
+msgid "Yes"
+msgstr "Oui"
+
+#: .\surveys\admin.py:99
+msgid "No"
+msgstr "Non"
+
+#: .\surveys\admin.py:136 .\surveys\admin.py:179
+msgid "Current survey"
+msgstr "Sondage actuel"
+
+#: .\surveys\admin.py:148
+msgid "Make all selected questions active"
+msgstr "Rendre les questions sélectionnées actives"
+
+#: .\surveys\admin.py:153
+msgid "Make all selected questions inactive"
+msgstr "Rendre les questions sélectionnées inactives"
+
+#: .\surveys\admin.py:158
+msgid "Disable all questions"
+msgstr "Désactiver toutes les questions"
+
+#: .\surveys\admin.py:159
+msgid "Set all the questions inactive at once"
+msgstr "Désactiver toutes les questions d'un coup"
+
+#: .\surveys\admin.py:186
+msgid "Link to session"
+msgstr "Lien vers la session"
+
+#: .\surveys\apps.py:7 .\surveys\models.py:22
+msgid "Surveys"
+msgstr "Sondages"
+
+#: .\surveys\forms.py:9
+msgid "First name"
+msgstr "Prénom"
+
+#: .\surveys\forms.py:10
+msgid "Last name"
+msgstr "Nom"
+
+#: .\surveys\models.py:14 .\surveys\models.py:29
+msgid "Title"
+msgstr "Titre"
+
+#: .\surveys\models.py:17 .\surveys\models.py:30 .\surveys\models.py:107
+msgid "Survey"
+msgstr "Sondage"
+
+#: .\surveys\models.py:31 .\surveys\models.py:264
+msgid "Date"
+msgstr "Date"
+
+#: .\surveys\models.py:45 .\surveys\models.py:189 .\surveys\models.py:263
+msgid "Session"
+msgstr "Session"
+
+#: .\surveys\models.py:46
+msgid "Sessions"
+msgstr "Sessions"
+
+#: .\surveys\models.py:55
+msgid "Only one session can be active at time."
+msgstr "Une seule session peut être active à la fois."
+
+#: .\surveys\models.py:105 .\surveys\models.py:129 .\surveys\models.py:157
+#: .\surveys\models.py:188
+msgid "Question"
+msgstr "Question"
+
+#: .\surveys\models.py:106 .\surveys\models.py:156
+msgid "Image"
+msgstr "Image"
+
+#: .\surveys\models.py:115
+msgid "Unique"
+msgstr "Unique"
+
+#: .\surveys\models.py:116
+msgid "Multiple"
+msgstr "Multiple"
+
+#: .\surveys\models.py:117 .\surveys\models.py:176
+msgid "Rank"
+msgstr "Rang"
+
+#: .\surveys\models.py:118
+msgid "Rate"
+msgstr "Notation"
+
+#: .\surveys\models.py:121
+msgid "Type"
+msgstr "Type"
+
+#: .\surveys\models.py:124
+msgid "Scale"
+msgstr "Échelle"
+
+#: .\surveys\models.py:126
+msgid "Active"
+msgstr "Active"
+
+#: .\surveys\models.py:130
+msgid "Questions"
+msgstr "Questions"
+
+#: .\surveys\models.py:155 .\surveys\models.py:161 .\surveys\models.py:175
+#: .\surveys\models.py:204
+msgid "Choice"
+msgstr "Choix"
+
+#: .\surveys\models.py:162 .\surveys\models.py:224
+msgid "Choices"
+msgstr "Choix"
+
+#: .\surveys\models.py:180 .\surveys\models.py:233
+msgid "Rank-choice pair"
+msgstr "Paire choix-rang"
+
+#: .\surveys\models.py:181
+msgid "Rank-choice pairs"
+msgstr "Paires choix-rang"
+
+#: .\surveys\models.py:193
+msgid "Answer"
+msgstr "Réponse"
+
+#: .\surveys\models.py:194
+msgid "Answers"
+msgstr "Réponses"
+
+#: .\surveys\models.py:207
+msgid "Unique answer"
+msgstr "Réponse unique"
+
+#: .\surveys\models.py:208
+msgid "Unique answers"
+msgstr "Réponses unique"
+
+#: .\surveys\models.py:228
+msgid "Multiple answer"
+msgstr "Réponse multiple"
+
+#: .\surveys\models.py:229
+msgid "Multiple answers"
+msgstr "Réponses multiples"
+
+#: .\surveys\models.py:236
+msgid "Rank answer"
+msgstr "Rang attribué"
+
+#: .\surveys\models.py:237
+msgid "Rank answers"
+msgstr "Rangs attribués"
+
+#: .\surveys\models.py:241
+msgid "Rating"
+msgstr "Notation"
+
+#: .\surveys\models.py:244
+msgid "Rate answer"
+msgstr "Notation donnée"
+
+#: .\surveys\models.py:245
+msgid "Rate answers"
+msgstr "Notations données"
+
+#: .\surveys\models.py:251
+msgid "Rate answer are valid only for rate questions"
+msgstr "Les notations ne sont valables que pour les questions à noter"
+
+#: .\surveys\models.py:255
+msgid "The rating must not exceed the scale ({})"
+msgstr "La note ne doit pas excéder l'échelle ({}) "
+
+#: .\surveys\models.py:261
+msgid "Author"
+msgstr "Auteur"
+
+#: .\surveys\models.py:262
+msgid "Text"
+msgstr "Texte"
+
+#: .\surveys\models.py:267 .\surveys\templates\surveys\current.html:29
+msgid "Comment"
+msgstr "Commentaire"
+
+#: .\surveys\models.py:268
+msgid "Comments"
+msgstr "Commentaires"
+
+#: .\surveys\templates\surveys\comments_select.html:19
+msgid "Discard all"
+msgstr "Tout supprimer"
+
+#: .\surveys\templates\surveys\current.html:25
+msgid "Please wait for other questions..."
+msgstr "Veuillez patienter pour recevoir d'autres questions..."
+
+#: .\surveys\templates\surveys\login.html:19
+msgid "Login"
+msgstr "Connexion"
+
+#: .\surveys\templates\surveys\login.html:20
+msgid "Continue anonymously"
+msgstr "Continuer anonymement"
+
+#: .\surveys\templates\surveys\questions.html:11
+msgid "Submit"
+msgstr "Envoyer"
+
+#: .\surveys\templates\surveys\questions.html:12
+msgid "Skip"
+msgstr "Passer"
+
+#: .\surveys\views.py:110
+msgid "Anonymous"
+msgstr "Anonyme"

@@ -1,0 +1,12 @@
+{% load static %}
+<script src="{% static "js/vendor/chart.min.js" %}"></script>
+<script>
+Chart.scaleService.updateScaleDefaults('linear', {
+    ticks: {
+        min: 0
+    }
+})
+</script>
+{{ chart.as_html }}
+
+

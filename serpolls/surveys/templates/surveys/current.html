@@ -2,23 +2,43 @@
 
 {% block title %}{{ survey }}{% endblock %}
 
-{% block content %}
-    <h2>{{ survey }}</h2>
-    <div id="questions">
-    </div>
-
-    <button id="refresh">Rafraîchir</button>
+{% block scripts %}
 
     {% load static %}
-    <script src="{% static 'js/app.js' %}" ></script>
+    <script src="{% static 'js/dist/bundle.js' %}" ></script>
+
+    <style>
+    h2 {
+        padding-top: 16px;
+        font-size: 1rem;
+    }
+    </style>
+{% endblock %}
+
+{% block content %}
+    {% load i18n %}
+    <div style="margin-left: 16px; margin-right: 16px;">
+        <div id="questions">
+        </div>
+
+        <div id="questions-placeholder">
+            <p>{% trans "Please wait for other questions..." %}</p>
+        </div>
+
+        <div class="fixed-bottom">
+            <button id="comment" class="btn btn-primary">{% trans "Comment" %}</button>
+        </div>
+    </div>
+
     <script>
-        const ACTIVE_QUESTIONS_URL = '{% url 'surveys:active-questions' %}';
-        const refreshButton = document.getElementById('refresh');
+        const questionsContainer = document.getElementById('questions')
+        const commentButton = document.getElementById('comment')
+        const urls = {
+            active: '{% url 'surveys:active-questions' %}',
+            skip: '{% url 'surveys:skip' %}',
+            comment: '{% url 'surveys:comment' %}'
+        }
 
-        refreshButton.addEventListener('click', function() {
-            requestQuestions(ACTIVE_QUESTIONS_URL);
-        });
-
-        requestQuestions(ACTIVE_QUESTIONS_URL);
+        const currentManager = new app.CurrentManager(questionsContainer, commentButton, urls)
     </script>
 {% endblock %}

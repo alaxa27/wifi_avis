@@ -1,0 +1,39 @@
+{% extends "base.html" %}
+
+{% block scripts %}
+
+    {% load static %}
+    <script src="{% static 'js/dist/bundle.js' %}"></script>
+
+{% endblock %}
+
+{% block content %}
+
+    <div id="comments">
+        <div id="staged-comments"></div>
+        <div id="selected-comments"></div>
+    </div>
+
+    <div class="fixed-bottom">
+        {% load i18n %}
+        <button id="discard-comments" class="btn btn-danger">{% trans 'Discard all' %}</button>
+    </div>
+
+    <script>
+        const stagedComments = document.getElementById('staged-comments')
+        const selectedComments = document.getElementById('selected-comments')
+        const discardComments = document.getElementById('discard-comments')
+        const urls = {
+            select: '{% url 'surveys:select-comment' %}',
+            discardAll: '{% url 'surveys:discard-all-comments' %}'
+        }
+
+        const selectManager = new app.SelectManager(
+            stagedComments,
+            selectedComments,
+            discardComments,
+            urls
+        )
+    </script>
+
+{% endblock %}
