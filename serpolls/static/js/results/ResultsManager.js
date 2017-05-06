@@ -14,6 +14,10 @@ export class ResultsManager {
     connect () {
         this.ws = new WebSocket(`${getWSProtocol()}://${window.location.host}${window.location.pathname}`)
         this.ws.onmessage = message => this._processMessage(message)
+        this.ws.onclose = () => {
+            window.setTimeout(this.connect, 5000)
+        }
+
     }
 
     _processMessage (message) {
@@ -21,13 +25,13 @@ export class ResultsManager {
 
         switch (data.type) {
             case 'comment':
-                this.commentsManager.add(data.author, data.text)
+                this.commentsManager.add(data.name, data.text)
                 break
             case 'update-questions':
                 this.getActiveQuestions()
                 break
             case 'update-results':
-                this.displayManager.update(data.question, data.results)
+                this.displayManager.updateQuestion(data.question, data.results)
                 break
             case 'remove-question':
                 this.displayManager.remove(data.question)
@@ -46,9 +50,7 @@ export class ResultsManager {
         xhr.onreadystatechange = () => {
             if (xhr.readyState === XMLHttpRequest.DONE) {
                 const questions = JSON.parse(xhr.responseText).questions
-                for (const question of questions) {
-                    this.displayManager.update(question, question.results)
-                }
+                this.displayManager.updateQuestions(questions)
             }
         }
 

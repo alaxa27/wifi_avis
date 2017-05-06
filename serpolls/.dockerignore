@@ -1,0 +1,3 @@
+.git/
+**/nodes_modules/
+*.pyc

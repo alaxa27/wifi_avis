@@ -6,18 +6,14 @@
 
     {% load static %}
     <script src="{% static 'js/dist/bundle.js' %}" ></script>
+    <script src="{% static 'js/vendor/rating.min.js' %}"></script>
+    <link rel="stylesheet" href="{% static 'css/rating.min.css' %}">
 
-    <style>
-    h2 {
-        padding-top: 16px;
-        font-size: 1rem;
-    }
-    </style>
 {% endblock %}
 
 {% block content %}
     {% load i18n %}
-    <div style="margin-left: 16px; margin-right: 16px;">
+    <div class="main-column">
         <div id="questions">
         </div>
 

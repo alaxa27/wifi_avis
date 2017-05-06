@@ -7,7 +7,7 @@ from django.utils.translation import ugettext as _
 from django_object_actions import DjangoObjectActions
 from nested_admin.nested import NestedStackedInline, NestedTabularInline, NestedModelAdmin
 
-from .models import Choice, Comment, Question, Session, Survey
+from .models import Choice, Comment, Question, Respondent, Session, Survey
 
 
 class ChoiceInline(NestedTabularInline):
@@ -113,7 +113,7 @@ class IsSurveyCurrentFilter(SimpleListFilter):
 class QuestionAdmin(DjangoObjectActions, NestedModelAdmin):
 
     fieldsets = [
-        (None, {'fields': ['text', 'image', 'type', 'scale']})
+        (None, {'fields': ['text', 'survey', 'image', 'type', 'scale', 'scale_type', 'is_active']})
     ]
 
     formfield_overrides = {
@@ -124,7 +124,7 @@ class QuestionAdmin(DjangoObjectActions, NestedModelAdmin):
     actions = ['make_active', 'make_inactive']
 
     list_display = ['__str__', 'type', 'is_active', 'link_to_survey', 'is_survey_current']
-    list_filter = ['type', 'is_active', 'survey', IsSurveyCurrentFilter]
+    list_filter = ['type', IsSurveyCurrentFilter, 'is_active', 'survey']
     list_editable = ['is_active']
 
     search_fields = ['text', 'type', 'survey__title']
@@ -161,6 +161,29 @@ class QuestionAdmin(DjangoObjectActions, NestedModelAdmin):
     changelist_actions = ('make_all_inactive',)
 
 
+@admin.register(Respondent)
+class RespondentAdmin(NestedModelAdmin):
+    fieldsets = [
+        (None, {'fields': ['first_name', 'last_name', 'gender', 'age', 'session']})
+    ]
+
+    list_display = ['__str__', 'gender', 'age', 'link_to_session', 'is_session_current']
+    list_filter = ['gender', 'session__is_current', 'session', 'session__survey']
+
+    def is_session_current(self, obj):
+        return obj.session.survey.is_current
+
+    is_session_current.boolean = True
+    is_session_current.short_description = _("Current session")
+
+    def link_to_session(self, obj):
+        link = reverse("admin:surveys_session_change", args=[obj.session.id])
+        return '<a href="{}">{}</a>'.format(link, obj.session)
+
+    link_to_session.allow_tags = True
+    link_to_session.short_description = _("Link to session")
+
+
 @admin.register(Comment)
 class CommentAdmin(NestedModelAdmin):
     fieldsets = [
@@ -168,7 +191,7 @@ class CommentAdmin(NestedModelAdmin):
     ]
 
     list_display = ['__str__', 'author', 'date', 'link_to_session', 'is_session_current']
-    list_filter = ['session__survey', 'session', 'session__is_current', 'author']
+    list_filter = ['session__is_current', 'session', 'author', 'session__survey']
 
     search_fields = ['author', 'text', 'date', 'session']
 
@@ -176,7 +199,7 @@ class CommentAdmin(NestedModelAdmin):
         return obj.session.survey.is_current
 
     is_session_current.boolean = True
-    is_session_current.short_description = _("Current survey")
+    is_session_current.short_description = _("Current session")
 
     def link_to_session(self, obj):
         link = reverse("admin:surveys_session_change", args=[obj.session.id])

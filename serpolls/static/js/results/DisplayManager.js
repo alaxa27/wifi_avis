@@ -13,7 +13,26 @@ export class DisplayManager {
         Chart.defaults.global.defaultFontSize = 18
     }
 
-    update(question, results) {
+    updateQuestions(questions) {
+        console.log("questions", questions)
+        for (const question of questions) {
+            let display = this._getAssociatedDisplay(question)
+            if (!display) {
+                display = this.newQuestion(question)
+                display.updateData(question.results)
+            }
+        }
+
+        for (const display of this.displays) {
+            const question = display.question
+            if (questions.map(q => q.id).includes(question.id)) {
+                continue
+            }
+            this.remove(display)
+        }
+    }
+
+    updateQuestion(question, results) {
         let display = this._getAssociatedDisplay(question)
         if (!display) {
             display = this.newQuestion(question)
@@ -29,11 +48,11 @@ export class DisplayManager {
         return display
     }
 
-    remove(question) {
-        const display = this._getAssociatedDisplay(question)
+    remove(display) {
         if (display) {
-            display.remove()
             this.displays.splice(this.displays.indexOf(display), 1)
+
+            display.remove()
         }
     }
 

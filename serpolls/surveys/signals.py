@@ -18,9 +18,8 @@ def notify_clients(sender, **kwargs):
 
 @receiver(post_save)
 def notify_results(sender, **kwargs):
-    list_of_models = ('UniqueAnswer', 'MultipleAnswer', 'RateAnswer')
+    list_of_models = ('UniqueAnswer', 'MultipleAnswer', 'RateAnswer', 'RankAnswer')
 
-    # TODO: other question types
     if sender.__name__ in list_of_models:  # this is the dynamic part you want
         answer = kwargs.pop('instance')
         question = answer.question

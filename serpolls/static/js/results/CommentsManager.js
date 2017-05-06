@@ -5,8 +5,8 @@ export class CommentsManager {
         this.commentsContainer = commentsContainer
     }
 
-    add(author, text) {
-        const comment = new Comment(author, text)
+    add(name, text) {
+        const comment = new Comment(name, text)
         this.commentsContainer.appendFirst(comment)
     }
 

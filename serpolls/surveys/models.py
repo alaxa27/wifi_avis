@@ -1,12 +1,16 @@
 import os
+import statistics
 
 from django.conf import settings
 from django.contrib.auth.models import User
 from django.core.exceptions import ValidationError
+from django.core.validators import MaxValueValidator, MinValueValidator
 from django.db import models
 from django.utils.translation import ugettext_lazy as _
 
 import openpyxl as xl
+
+import surveys.export
 
 
 class Survey(models.Model):
@@ -55,46 +59,16 @@ class Session(models.Model):
 
     def export_to_xlsx(self):
         wb = xl.Workbook()
-        results_ws = wb.create_sheet("Résultats")
 
-        results_ws['A1'] = "Survey"
-        results_ws['B1'] = self.survey.title
-
-        results_ws['A2'] = "Session"
-        results_ws['B2'] = self.title
-        results_ws['C2'] = self.date
-
-        line = 4
-        for question in self.survey.question_set.all():
-            # TODO: other question types
-            results_ws['A{}'.format(line)] = str(question)
-            results_ws['A{}'.format(line+1)] = "Réponses"
-
-            if question.type in [Question.UNIQUE, Question.MULTIPLE]:
-                for i, choice in enumerate(question.choice_set.all()):
-                    results_ws['{}{}'.format(chr(ord("A") + i + 1),line)] = choice.text
-                    results_ws['{}{}'.format(chr(ord("A") + i + 1),line + 1)] = \
-                        UniqueAnswer.objects.filter(question=question, choice=choice, session=self).count() if question.type == Question.UNIQUE else MultipleAnswer.objects.filter(question=question, choices=choice, session=self).count()
-
-            elif question.type == Question.RATE:
-                for i in range(question.scale + 1):
-                    results_ws['{}{}'.format(chr(ord("A") + i + 1),line)] = i
-                    results_ws['{}{}'.format(chr(ord("A") + i + 1),line + 1)] = RateAnswer.objects.filter(question=question, rating=i, session=self).count()
-
-            line += 3
-
-        comments_ws = wb.create_sheet("Commentaires")
-
-        for i, comment in enumerate(self.comment_set.all()):
-            comments_ws['A'.format(i + 1)] = comment.date
-            comments_ws['B'.format(i + 1)] = comment.author
-            comments_ws['C'.format(i + 1)] = comment.text
+        surveys.export.export_questions_sheet(wb.create_sheet("Résultats"), self)
+        surveys.export.export_comments_sheet(wb.create_sheet("Commentaires"), self)
+        surveys.export.export_respondents_sheet(wb.create_sheet("Interrogés"), self)
 
         i = 0
-        while os.path.exists(os.path.join(settings.EXPORT_DIR, "{} - {}.xlsx".format(self, i))):
+        while os.path.exists(os.path.join(settings.EXPORT_DIR, f"{self} - {i}.xlsx")):
             i += 1
 
-        wb.save(os.path.join(settings.EXPORT_DIR, "{} - {}.xlsx".format(self, i)))
+        wb.save(os.path.join(settings.EXPORT_DIR, f"{self} - {i}.xlsx"))
 
     def __str__(self):
         return self.title
@@ -120,6 +94,16 @@ class Question(models.Model):
     type = models.CharField(verbose_name=_("Type"), max_length=4, choices=TYPES, default=UNIQUE)
 
     # RATE only
+
+    SCALE_NORMAL = 'NORMAL'
+    SCALE_STARS = 'STARS'
+
+    SCALE_TYPES = (
+        (SCALE_NORMAL, _("Normal")),
+        (SCALE_STARS, _("Stars"))
+    )
+
+    scale_type = models.CharField(verbose_name=_("Rate type"), max_length=6, choices=SCALE_TYPES, default=SCALE_NORMAL)
     scale = models.PositiveIntegerField(verbose_name=_("Scale"), blank=True, null=True)
 
     is_active = models.BooleanField(verbose_name=_("Active"), blank=True, default=False)
@@ -129,7 +113,6 @@ class Question(models.Model):
         verbose_name_plural = _("Questions")
 
     def get_answers_data(self):
-        # TODO: other question types
         if self.type == self.UNIQUE:
             return [
                 UniqueAnswer.objects.filter(session__is_current=True, question=self, choice=choice).count()
@@ -144,6 +127,15 @@ class Question(models.Model):
             return [
                 RateAnswer.objects.filter(session__is_current=True, question=self, rating=rating).count()
                 for rating in range(self.scale + 1)
+            ]
+        elif self.type == self.RANK:
+            return [
+                1 / statistics.mean([a.rank for a in RankAnswer.objects.filter(
+                    session__is_current=True,
+                    question=self,
+                    choice=choice
+                )] or [0])
+                for choice in self.choice_set.all()
             ]
 
     def __str__(self):
@@ -168,19 +160,6 @@ class Choice(models.Model):
 
     def __str__(self):
         return self.text
-
-
-class RankChoicePair(models.Model):
-    choice = models.ForeignKey(Choice, verbose_name=_("Choice"),  null=False)
-    rank = models.PositiveIntegerField(verbose_name=_("Rank"), )
-
-    class Meta:
-        unique_together = ('choice', 'rank')
-        verbose_name = _("Rank-choice pair")
-        verbose_name_plural = _("Rank-choice pairs")
-
-    def __str__(self):
-        return "{}: {}".format(self.rank, self.choice)
 
 
 class Answer(models.Model):
@@ -229,7 +208,8 @@ class MultipleAnswer(Answer):
 
 
 class RankAnswer(Answer):
-    rank_choice_pairs = models.ManyToManyField(RankChoicePair, verbose_name=_("Rank-choice pair"))  # Length must be equal to number of choices
+    choice = models.ForeignKey(Choice, verbose_name=_("Choice"),  blank=False, on_delete=models.CASCADE)
+    rank = models.PositiveIntegerField(verbose_name=_("Ranking"))
 
     class Meta:
         verbose_name = _("Rank answer")
@@ -256,8 +236,33 @@ class RateAnswer(Answer):
             )
 
 
+class Respondent(models.Model):
+    first_name = models.CharField(verbose_name=_("First name"), max_length=64)
+    last_name = models.CharField(verbose_name=_("Last name"), max_length=64)
+
+    MALE = 'MALE'
+    FEMALE = 'FEMA'
+    UNDEFINED = 'NDEF'
+
+    GENDERS = (
+        (UNDEFINED, _("Undefined")),
+        (MALE, _("Male")),
+        (FEMALE, _("Female")),
+    )
+    gender = models.CharField(verbose_name=_("Gender"), max_length=4, choices=GENDERS, default=UNDEFINED)
+    age = models.PositiveIntegerField(verbose_name=_("Age"), validators=[MaxValueValidator(120)], blank=True, null=True)
+    session = models.ForeignKey(Session, verbose_name=_("Session"), null=False)
+
+    class Meta:
+        verbose_name = _("Respondent")
+        verbose_name_plural = _("Respondents")
+
+    def __str__(self):
+        return f"{self.first_name} {self.last_name}"
+
+
 class Comment(models.Model):
-    author = models.CharField(verbose_name=_("Author"), max_length=255, null=True)
+    author = models.ForeignKey(Respondent, verbose_name=_("Author"), null=True)
     text = models.TextField(verbose_name=_("Text"))
     session = models.ForeignKey(Session, verbose_name=_("Session"), null=False)
     date = models.DateTimeField(verbose_name=_("Date"), auto_now=True)
@@ -268,6 +273,6 @@ class Comment(models.Model):
 
     def __str__(self):
         if len(self.text) > 16:
-            return "{}...".format(self.text[:16])
+            return f"{self.text[:16]}..."
         else:
             return self.text

@@ -1,0 +1,31 @@
+version: "2"
+
+services:
+  nginx:
+    build: ./nginx
+    volumes:
+      - .:/app
+      - /app/node_modules
+    ports:
+      - "80:80"
+    links:
+      - interface
+  redis:
+    image: redis:latest
+  interface:
+    build: .
+    command: bash /app/entrypoint-production.sh
+    volumes:
+      - .:/app
+      - /app/node_modules
+    ports:
+      - "8000:8000"
+    links:
+      - redis
+  worker:
+    build: .
+    command: python manage.py runworker
+    volumes:
+      - .:/app
+    links:
+      - redis

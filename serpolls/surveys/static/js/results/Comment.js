@@ -1,13 +1,13 @@
 export class Comment extends HTMLElement {
-    constructor(author, text) {
+    constructor(name, text) {
         super()
-        this.author = author
+        this.name = name
         this.text = text
     }
 
     connectedCallback() {
         this.className = 'frame'
-        this.innerHTML = `<div><h3>${this.author}</h3><p>${this.text}</p></div>`
+        this.innerHTML = `<div><h3>${this.name}</h3><p>${this.text}</p></div>`
     }
 }
 
