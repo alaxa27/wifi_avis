@@ -10,6 +10,10 @@ Simply run the following command
 ```sh
 docker-compose -f docker-compose-prod.yml up -d
 ```
+Install dependencies
+```
+docker-compose -f docker-compose-dev.yml run web npm install
+```
 
 Create an admin user account like so
 
