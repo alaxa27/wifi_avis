@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+
+{% block scripts %}
+
+    {% load static %}
+    <script src="{% static 'js/dist/bundle.js' %}"></script>
+
+    <style>
+    h2 {
+        padding-top: 16px;
+        font-size: 1rem;
+    }
+    </style>
+{% endblock %}
+
+{% block content %}
+
+    <div class="panels">
+        <div id="comments" class="results panel p-25 resize-x"></div>
+        <div id="charts" class="panel"></div>
+    </div>
+
+    <script>
+        const commentsManager = new app.CommentsManager(document.getElementById('comments'))
+        const displayManager = new app.DisplayManager(document.getElementById('charts'))
+        const urls = {
+            active: '{% url 'surveys:active-questions-list' %}'
+        }
+
+        const resultsManager = new app.ResultsManager(displayManager, commentsManager, urls)
+    </script>
+
+{% endblock %}

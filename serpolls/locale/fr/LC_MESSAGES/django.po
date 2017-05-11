@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-04-13 11:51+0200\n"
+"POT-Creation-Date: 2017-05-06 08:12+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -18,11 +18,11 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
 
-#: .\serpolls\settings.py:130
+#: .\serpolls\settings.py:141
 msgid "English"
 msgstr "Anglais"
 
-#: .\serpolls\settings.py:131
+#: .\serpolls\settings.py:142
 msgid "French"
 msgstr "Français"
 

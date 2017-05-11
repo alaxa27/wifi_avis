@@ -5,19 +5,26 @@
 {% block scripts %}
 
     {% load static %}
+    {% load i18n %}
+
     <script src="{% static 'js/dist/bundle.js' %}" ></script>
 
 {% endblock %}
 
 {% block content %}
 
-    <div>
+    <div class="main-column">
+        <p class="frame">
+            {% blocktrans %}
+                Please note your names may be displayed when posting comments and your data collected for statistics purpose.
+                Feel free to login Anonymously if you do not want to provide us data inputed in this form.
+            {% endblocktrans %}
+        </p>
         <form action="{% url 'surveys:login' %}" method="post" class="frame">
             {% csrf_token %}
             {{ form }}
-            {% load i18n %}
             <input type="submit" value="{% trans "Login" %}" class="btn btn-lg btn-success">
-            <button type="button" onclick="location.href='{% url 'surveys:current' %}'" class="skip btn btn-default">{% trans "Continue anonymously" %}</button>
+            <button type="button" onclick="location.href='{% url 'surveys:current' %}'" class="skip btn btn-info">{% trans "Continue anonymously" %}</button>
         </form>
     </div>
 

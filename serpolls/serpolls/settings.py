@@ -19,7 +19,7 @@ EXPORT_DIR = os.path.join(BASE_DIR, 'export')
 SECRET_KEY = ')s9#z05o)y&go2ny33dzae$4g23-h^!$s-r@fe!+3!4l(wpi3i'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = os.environ.get('DEBUG') == 'TRUE'
 
 ALLOWED_HOSTS = ['*']
 
@@ -75,12 +75,23 @@ WSGI_APPLICATION = 'serpolls.wsgi.application'
 
 # Channels
 # Configuration for channels, enabling the use of websockets
-CHANNEL_LAYERS = {
-    'default': {
-        'BACKEND': 'asgiref.inmemory.ChannelLayer',
-        'ROUTING': 'serpolls.routing.channel_routing',
-    },
-}
+if DEBUG:
+    CHANNEL_LAYERS = {
+        'default': {
+            'BACKEND': 'asgiref.inmemory.ChannelLayer',
+            'ROUTING': 'serpolls.routing.channel_routing',
+        },
+    }
+else:
+    CHANNEL_LAYERS = {
+        "default": {
+            "BACKEND": "asgi_redis.RedisChannelLayer",
+            "CONFIG": {
+                "hosts": [("redis", 6379)],
+            },
+            "ROUTING": "serpolls.routing.channel_routing",
+        },
+    }
 
 
 # Database
@@ -116,7 +127,7 @@ AUTH_PASSWORD_VALIDATORS = [
 # Internationalization
 # https://docs.djangoproject.com/en/1.10/topics/i18n/
 
-LANGUAGE_CODE = 'fr-fr'
+LANGUAGE_CODE = 'fr-ff'
 
 TIME_ZONE = 'UTC'
 

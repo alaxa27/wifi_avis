@@ -1,3 +1,4 @@
+import 'babel-polyfill'
 import {CommentsManager} from './results/CommentsManager.js'
 import {CurrentManager} from './current/CurrentManager.js'
 import {DisplayManager} from './results/DisplayManager.js'

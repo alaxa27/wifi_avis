@@ -1,7 +1,7 @@
 [Desktop Entry]
 Name=Serveur Wifi Avis
 Comment=Lancer le serveur
-Exec=gksudo /home/master/wifi_avis/serpolls/Serveur.sh
+Exec=gksudo /home/master/wifi_avis/Serveur.sh
 Icon=gnome-network-wireless
 Terminal=true
 Type=Application

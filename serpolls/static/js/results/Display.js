@@ -18,6 +18,51 @@ const BORDER_COLORS = [
     'rgba(255, 159, 64, 1)'
 ]
 
+Chart.pluginService.register({
+    beforeRender: function (chart) {
+        if (chart.config.options.showAllTooltips) {
+            // create an array of tooltips
+            // we can't use the chart tooltip because there is only one tooltip per chart
+            chart.pluginTooltips = [];
+            chart.config.data.datasets.forEach(function (dataset, i) {
+                chart.getDatasetMeta(i).data.forEach(function (sector, j) {
+                    chart.pluginTooltips.push(new Chart.Tooltip({
+                        _chart: chart.chart,
+                        _chartInstance: chart,
+                        _data: chart.data,
+                        _options: chart.options.tooltips,
+                        _active: [sector]
+                    }, chart));
+                });
+            });
+
+            // turn off normal tooltips
+            chart.options.tooltips.enabled = false;
+        }
+    },
+    afterDraw: function (chart, easing) {
+        if (chart.config.options.showAllTooltips) {
+            // we don't want the permanent tooltips to animate, so don't do anything till the animation runs atleast once
+            if (!chart.allTooltipsOnce) {
+                if (easing !== 1)
+                    return;
+                chart.allTooltipsOnce = true;
+            }
+
+            // turn on tooltips
+            chart.options.tooltips.enabled = true;
+            Chart.helpers.each(chart.pluginTooltips, function (tooltip) {
+                tooltip.initialize();
+                tooltip.update();
+                // we don't actually need this since we are not animating tooltips
+                tooltip.pivot();
+                tooltip.transition(easing).draw();
+            });
+            chart.options.tooltips.enabled = false;
+        }
+    }
+})
+
 export class Display extends HTMLElement {
     constructor(question) {
         super()
@@ -27,6 +72,13 @@ export class Display extends HTMLElement {
     connectedCallback() {
         this.className = 'frame'
         this.innerHTML = `<div><canvas class="chart"></canvas></div>`
+        // ChartJS pie charts do not display titles correctly
+        if (this.question.type === 'UNIQ') {
+            const title = document.createElement('h3')
+            title.innerText = this.question.text
+            this.appendFirst(title)
+        }
+
         this.mean = document.createElement('p')
         this.appendChild(this.mean)
 
@@ -45,47 +97,52 @@ export class Display extends HTMLElement {
             ]
         }
 
+        const type = this.question.type === 'UNIQ' ? 'pie' : 'bar'
+
         const options = {
-            scales: {
+            tooltips: {
+                enabled: true,
+                callbacks: {
+                    title: function (tooltipItem, data) {
+                        return null
+                    },
+
+                    label: function(tooltipItems, data) {
+                        const points = data.datasets[tooltipItems.datasetIndex].data
+                        const value = type === 'pie' ?
+                            100 * points[tooltipItems.index] / points.reduce((acc, v) => acc + v) :
+                            points[tooltipItems.index]
+
+                        return Math.round(value * 100) / 100 + (type === 'pie' ? " %" : "")
+                    },
+
+                }
+            },
+            showAllTooltips: true,
+            events: false,
+            responsive: true,
+            maintainAspectRatio: false,
+            animation: {
+                duration: 0,
+            },
+        }
+
+        if (type === 'bar') {
+            options.scales = {
                 yAxes: [{
                     ticks: {
                         beginAtZero:true
                     }
                 }]
-            },
-            tooltips: {
-                enabled: false
-            },
-            responsive: false,
-            animation: {
-                onComplete: function () {
-                    const chartInstance = this.chart
-                    const ctx = chartInstance.ctx
-                    ctx.font = Chart.helpers.fontString(
-                        Chart.defaults.global.defaultFontSize,
-                        Chart.defaults.global.defaultFontStyle,
-                        Chart.defaults.global.defaultFontFamily
-                    )
-                    ctx.textAlign = 'center'
-                    ctx.textBaseline = 'bottom'
-
-                    this.data.datasets.forEach(function (dataset, i) {
-                        const meta = chartInstance.controller.getDatasetMeta(i)
-                        meta.data.forEach(function (bar, index) {
-                            const data = dataset.data[index]
-                            ctx.fillText(data, bar._model.x, bar._model.y - 5)
-                        });
-                    });
-                },
             }
         }
 
+
         this.chart = new Chart(ctx, {
-            type: 'bar',
+            type: type,
             data: chartData,
             options: options
         })
-
     }
 
     updateData(data) {
@@ -100,7 +157,7 @@ export class Display extends HTMLElement {
                 sum += data[i] * this.question.choices[i]
             }
 
-            const mean = sum / n
+            const mean = Math.round(100 * sum / n) / 100
             this.updateMean(mean)
         }
     }

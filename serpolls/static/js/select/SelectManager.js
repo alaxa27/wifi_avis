@@ -29,21 +29,24 @@ export class SelectManager {
     connect() {
         this.ws = new WebSocket(`${getWSProtocol()}://${window.location.host}${window.location.pathname}`)
         this.ws.onmessage = message => this._processMessage(message)
+        this.ws.onclose = () => {
+            window.setTimeout(this.connect, 5000)
+        }
     }
 
     _processMessage(message) {
         const data = JSON.parse(message.data)
         switch (data.type) {
             case 'comment':
-                this.appendComment(data.author, data.text)
+                this.appendComment(data.author, data.name, data.text, data.age, data.gender)
                 break
             default:
                 break
         }
     }
 
-    appendComment(author, text) {
-        const comment = new StagedComment(author, text)
+    appendComment(author, name, text, age, gender) {
+        const comment = new StagedComment(name, text)
         this.stagedCommentsContainer.appendFirst(comment)
         const selectedCommentsContainer = this.selectedCommentsContainer
 
@@ -54,7 +57,7 @@ export class SelectManager {
                 if (this.readyState === XMLHttpRequest.DONE) {
                     if (this.status === 200) {
                         comment.remove()
-                        selectedCommentsContainer.appendFirst(new SelectedComment(author, text))
+                        selectedCommentsContainer.appendFirst(new SelectedComment(name, text))
                     } else {
                         window.alert(gettext("Could not send comment, please try again."))
                     }
@@ -63,7 +66,7 @@ export class SelectManager {
 
             xhr.open('POST', this.urls.select)
             xhr.setRequestHeader("Content-type", "application/x-www-form-urlencoded")
-            xhr.send(`author=${author}&text=${text}`)
+            xhr.send(`author=${author}&name=${name}&text=${text}&age=${age}&gender=${gender}`)
         })
     }
 }

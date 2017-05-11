@@ -1,7 +1,7 @@
 const path = require('path')
 
 const config = {
-    entry: './surveys/static/js/app.js',
+    entry: ['babel-polyfill', './surveys/static/js/app.js'],
     output: {
         path: path.resolve('./surveys/static/js/dist'),
         filename: 'bundle.js',
@@ -16,7 +16,10 @@ const config = {
                 loader: 'babel-loader',
                 exclude: /node_modules/,
                 query: {
-                    presets: ['es2015']
+                    presets: ['es2015'],
+                    plugins: [
+                        ["transform-custom-element-classes"],
+                    ],
                 }
             }
         ]

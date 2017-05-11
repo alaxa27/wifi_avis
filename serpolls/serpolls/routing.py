@@ -1,5 +1,6 @@
 from channels.routing import route
-from surveys.consumers import ws_add_current, ws_add_comments_select, ws_add_results, ws_disconnect, ws_valid_comment
+from surveys.consumers import *
+
 
 channel_routing = [
     route('websocket.connect', ws_add_current, path=r'^/surveys/current/$'),

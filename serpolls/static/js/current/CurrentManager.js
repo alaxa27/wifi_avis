@@ -12,6 +12,9 @@ export class CurrentManager {
     connect() {
         this.ws = new WebSocket(`${getWSProtocol()}://${window.location.host}${window.location.pathname}`)
         this.ws.onmessage = message => this._processMessage(message)
+        this.ws.onclose = () => {
+            window.setTimeout(this.connect, 5000)
+        }
     }
 
     _processMessage(message) {
@@ -47,7 +50,23 @@ export class CurrentManager {
     }
 
     _setUpQuestionForm(form) {
+        if (form.classList.contains('question-rate')) {
+            const input = document.getElementsByName('rating')[0]
+
+            if (input.classList.contains("STARS")) {
+                const ul = document.createElement('ul')
+                form.insertBefore(ul, input.nextSibling)
+
+                rating(ul, input.min, input.max, function(rating) {
+                    input.value = rating
+                })
+
+                input.hidden = true
+            }
+        }
+
         form.addEventListener('submit', CurrentManager._setUpSubmitXhr, true)
+
         const skipButton = form.getElementsByClassName('skip')[0]
         skipButton.addEventListener('click', e => this._setUpSkipXhr(e, form), true)
     }
@@ -59,9 +78,9 @@ export class CurrentManager {
         const data = new FormData(form)
         const xhr = new XMLHttpRequest()
 
-        xhr.onreadystatechange = function () {
-            if (this.readyState === XMLHttpRequest.DONE) {
-                if (this.status === 201) {
+        xhr.onreadystatechange = () => {
+            if (xhr.readyState === XMLHttpRequest.DONE) {
+                if (xhr.status === 201 || xhr.status === 200) {
                     form.remove()
                 } else {
                     window.alert(gettext("Could not submit your answer, please try again."))
@@ -82,8 +101,8 @@ export class CurrentManager {
 
         const xhr = new XMLHttpRequest()
 
-        xhr.onreadystatechange = function() {
-            if (this.readyState === XMLHttpRequest.DONE) {
+        xhr.onreadystatechange = () => {
+            if (xhr.readyState === XMLHttpRequest.DONE) {
                 form.remove()
             }
         }
@@ -101,9 +120,9 @@ export class CurrentManager {
             if (comment !== null) {
                 const xhr = new XMLHttpRequest()
 
-                xhr.onreadystatechange = function() {
-                    if (this.readyState === XMLHttpRequest.DONE) {
-                        if (this.status === 200) {
+                xhr.onreadystatechange = () => {
+                    if (xhr.readyState === XMLHttpRequest.DONE) {
+                        if (xhr.status === 200 || xhr.status === 200) {
                             window.alert(gettext("Comment sent!"))
                         } else {
                             window.alert(gettext("Could not send comment, please try again."))

@@ -1,0 +1,17 @@
+version: "2"
+
+services:
+  web:
+    build: .
+    environment:
+      - DEBUG=TRUE
+    command: python manage.py runserver 0.0.0.0 8000
+    volumes:
+      - .:/app
+    ports:
+      - "8000:8000"
+  webpack:
+    image: jmfirth/webpack:latest
+    command: webpack --watch
+    volumes:
+      - .:/app

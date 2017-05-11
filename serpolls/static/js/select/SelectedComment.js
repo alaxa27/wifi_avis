@@ -1,8 +1,8 @@
 import {Comment} from '../results/Comment.js'
 
 export class SelectedComment extends Comment {
-    constructor(author, text) {
-        super(author, text)
+    constructor(name, text) {
+        super(name, text)
     }
 }
 
